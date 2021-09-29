@@ -2,7 +2,7 @@
 
 namespace Classes;
 
-class DB
+class Printer
 {
 
 }
