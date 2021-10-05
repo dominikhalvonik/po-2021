@@ -21,12 +21,22 @@ class DB
         $this->port = $port;
 
         try {
-            $this->connection = new \PDO("mysql:host=".$this->host.";port=".$this->port."dbname=".$this->dbName, $this->username, $this->pass);
+            $this->connection = new \PDO("mysql:host=".$this->host.";port=".$this->port.";dbname=".$this->dbName, $this->username, $this->pass);
             // set the PDO error mode to exception
             $this->connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         } catch(\PDOException $e) {
             echo "Connection failed: " . $e->getMessage();
         }
+    }
+
+    public function getMenu()
+    {
+        $sql = "SELECT * FROM menu";
+        $stm = $this->connection->prepare($sql);
+        $stm->execute();
+        $result = $stm->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $result;
     }
 
 }
