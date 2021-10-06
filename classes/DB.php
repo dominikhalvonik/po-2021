@@ -29,4 +29,14 @@ class DB
             echo "Connection failed: " . $e->getMessage();
         }
     }
+
+    public function getMenu()
+    {
+        $sql = "SELECT * FROM menu";
+        $stm = $this->connection->prepare($sql);
+        $stm->execute();
+        $result = $stm->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $result;
+    }
 }
