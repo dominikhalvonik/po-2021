@@ -14,3 +14,11 @@
 
     -->
 </head>
+<?php
+include_once "classes/DB.php";
+
+use Classes\DB;
+
+$db = new DB("localhost", "root", "", "portalove", "3308");
+$menus = $db->getMenu();
+?>

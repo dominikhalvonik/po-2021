@@ -2,7 +2,14 @@
 <html lang="en">
 <?php include_once "parts/header.php"; ?>
 <body>
-    <?php include_once "parts/nav.php"; ?>
+    <?php
+    include_once "parts/nav.php";
+    if(!isset($db)) {
+        $db = new stdClass();
+    }
+    $id = $_GET['id'];
+    $articleDetails = $db->getArticle($id);
+    ?>
     <div class="container-fluid">
         <main class="tm-main">
             <?php include_once "parts/search.php"; ?>
@@ -17,27 +24,18 @@
                 </div>
             </div>
             <div class="row tm-row">
+                <?php
+                if($articleDetails) {
+                ?>
                 <div class="col-lg-8 tm-post-col">
                     <div class="tm-post-full">                    
                         <div class="mb-4">
-                            <h2 class="pt-2 tm-color-primary tm-post-title">Single Post of Xtra Blog HTML Template</h2>
-                            <p class="tm-mb-40">June 16, 2020 posted by Admin Nat</p>
+                            <h2 class="pt-2 tm-color-primary tm-post-title"><?php echo $articleDetails['title']; ?></h2>
+                            <p class="tm-mb-40"><?php echo date("d.m.Y", strtotime($articleDetails['created_at'])); ?> posted by <?php echo $articleDetails['username']; ?></p>
                             <p>
-                                This is a description of the video post. You can also have an image instead of
-                                the video. You can free download 
-                                <a rel="nofollow" href="https://templatemo.com/tm-553-xtra-blog" target="_blank">Xtra Blog Template</a> 
-                                from TemplateMo website. Phasellus maximus quis est sit amet maximus. Vestibulum vel rutrum
-                                lorem, ac sodales augue. Aliquam erat volutpat. Duis lectus orci, blandit in arcu
-                                est, elementum tincidunt lectus. Praesent vel justo tempor, varius lacus a,
-                        pharetra lacus. </p>
-                            <p>
-                                Duis pretium efficitur nunc. Mauris vehicula nibh nisi. Curabitur gravida neque
-                                dignissim, aliquet nulla sed, condimentum nulla. Pellentesque id venenatis
-                                quam, id cursus velit. Fusce semper tortor ac metus iaculis varius. Praesent
-                                aliquam ex vel lectus ornare tristique. Nunc et eros quis enim feugiat tincidunt
-                                et vitae dui.
+                                <?php echo $articleDetails['content']; ?>
                             </p>
-                            <span class="d-block text-right tm-color-primary">Creative . Design . Business</span>
+                            <span class="d-block text-right tm-color-primary"><?php echo $articleDetails['category']; ?></span>
                         </div>
                         
                         <!-- Comments -->
@@ -130,7 +128,12 @@
                     </div>                    
                 </aside>
             </div>
-            <?php include_once "parts/footer.php"; ?>
+            <?php
+            } else {
+               echo "Zadany clanok neexistuje";
+            }
+            include_once "parts/footer.php";
+            ?>
         </main>
     </div>
 </body>

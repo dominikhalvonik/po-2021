@@ -39,4 +39,45 @@ class DB
         return $result;
     }
 
+    public function getAllArticles()
+    {
+        $sql = "SELECT p.id, p.title, p.perex, p.created_at, p.image, u.username, c.cat_name AS category
+                FROM `posts` AS p
+                INNER JOIN users AS u ON p.users_id = u.id
+                INNER JOIN categories AS c ON p.categories_id = c.id
+                ORDER BY p.created_at DESC";
+        $stm = $this->connection->prepare($sql);
+        $stm->execute();
+        $result = $stm->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
+    public function countArticleComments($postId)
+    {
+        $sql = "SELECT COUNT(id) AS numComments FROM comments WHERE posts_id = :post_id";
+        $stm = $this->connection->prepare($sql);
+        $stm->bindValue(':post_id', $postId);
+        $stm->execute();
+        $result = $stm->fetchColumn();
+
+        return $result;
+    }
+
+    public function getArticle($postId)
+    {
+        $sql = "SELECT p.id, p.title, p.content, p.created_at, p.image, u.username, c.cat_name AS category
+                FROM `posts` AS p
+                INNER JOIN users AS u ON p.users_id = u.id
+                INNER JOIN categories AS c ON p.categories_id = c.id
+                WHERE p.id = :post_id
+                ORDER BY p.created_at DESC";
+        $stm = $this->connection->prepare($sql);
+        $stm->bindValue(':post_id', $postId);
+        $stm->execute();
+        $result = $stm->fetch(\PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
 }
