@@ -80,4 +80,18 @@ class DB
         return $result;
     }
 
+    public function getComments($postId)
+    {
+        $sql = "SELECT c.id, c.content, c.created_at, u.username, u.image 
+                FROM comments AS c
+                INNER JOIN users AS u ON c.users_id = u.id
+                WHERE c.posts_id = :post_id";
+        $stm = $this->connection->prepare($sql);
+        $stm->bindValue('post_id', $postId);
+        $stm->execute();
+        $result = $stm->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
 }
