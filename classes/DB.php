@@ -85,13 +85,64 @@ class DB
         $sql = "SELECT c.id, c.content, c.created_at, u.username, u.image 
                 FROM comments AS c
                 INNER JOIN users AS u ON c.users_id = u.id
-                WHERE c.posts_id = :post_id";
+                WHERE c.posts_id = :post_id
+                ORDER BY c.created_at ASC";
         $stm = $this->connection->prepare($sql);
         $stm->bindValue('post_id', $postId);
         $stm->execute();
         $result = $stm->fetchAll(\PDO::FETCH_ASSOC);
 
         return $result;
+    }
+
+    public function insertPostComment($postId, $userName, $content)
+    {
+        $dateTime = date("Y-m-d H:i:s", time());
+
+        $sqlUser = "SELECT id FROM users WHERE username = :username";
+        $stmUser = $this->connection->prepare($sqlUser);
+        $stmUser->bindValue(":username", $userName);
+        $stmUser->execute();
+        $userId = $stmUser->fetchColumn();
+
+        $sql = "INSERT INTO comments(content, created_at, posts_id, users_id) VALUE(:content, '".$dateTime."', :post_id, :user_id)";
+        $stm = $this->connection->prepare($sql);
+        $stm->bindValue(':content', $content);
+        $stm->bindValue(':post_id', $postId);
+        $stm->bindValue(':user_id', $userId);
+        $result = $stm->execute();
+
+        return $result;
+
+    }
+
+    public function deletePostComment($commentId)
+    {
+        $sql = "DELETE FROM comments WHERE id = :id";
+        $stm = $this->connection->prepare($sql);
+        $stm->bindValue(":id", $commentId);
+        $result = $stm->execute();
+
+        return $result;
+    }
+
+    public function updatePostComment($commentId, $userId, $content)
+    {
+        $sql = "UPDATE comments SET content = '".$content."', users_id = '".$userId."' WHERE id = '".$commentId."'";
+        $stm = $this->connection->prepare($sql);
+        $result = $stm->execute();
+
+        return $result;
+    }
+
+    public function getComment($commentId)
+    {
+        $sql = "SELECT * FROM comments WHERE id = ".$commentId;
+        $stm = $this->connection->prepare($sql);
+        $stm->execute();
+        $comment = $stm->fetch(\PDO::FETCH_ASSOC);
+
+        return $comment;
     }
 
 }

@@ -24,4 +24,6 @@ if(!isset($comment)) {
             <span class="tm-color-primary"><?php echo date("d.m.Y", strtotime($comment['created_at'])); ?></span>
         </div>
     </div>
+    <a href="delete-post-comment.php?comment-id=<?php echo $comment['id'];?>&post-id=<?php echo $id; ?>">Delete</a>
+    <a href="update-post-comment.php?comment-id=<?php echo $comment['id'];?>&post-id=<?php echo $id; ?>">Update</a>
 </div>
